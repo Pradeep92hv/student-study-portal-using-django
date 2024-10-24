@@ -12,3 +12,10 @@ cd studentstudyportal
 python manage.py runserver
 
 python manage.py startapp dashboard
+
+python manage.py makemigrations
+
+
+python manage.py makemigrations
+python manage.py migrate
+
