@@ -1,0 +1,14 @@
+pip install virtualenv
+python -m venv myenv
+
+source myenv/Scripts/activate
+
+pip install django
+
+django-admin startproject studentstudyportal
+
+cd studentstudyportal
+
+python manage.py runserver
+
+python manage.py startapp dashboard
