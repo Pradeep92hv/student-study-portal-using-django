@@ -71,6 +71,10 @@
   <br /><br />
   <main>
 
+    {% if messages %}
+      {% for msg in messages %}
+         <div class="alert alert-{{msg.tags}}"> {{msg}}
+
     {% block content %}
     {% endblock content %}
 

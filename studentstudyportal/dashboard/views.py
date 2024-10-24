@@ -1,6 +1,7 @@
 from django.shortcuts import render
 # from . forms import NotesForm
 from . form import *
+from django.contrib import messages
 
 # Create your views here.
 def home(request):
@@ -8,7 +9,17 @@ def home(request):
 
 
 def notes(request):
-    form=NotesForm()
+    if request.method == "POST":
+        form = NotesForm(request.POST)
+        
+        if form.is_valid():
+            notes =Notes(user=request.user,title=request.POST['title'],description=request.POST['description'])
+            notes.save()
+            
+        messages.success(request,f"notes added from {request.user.username} Successfully")
+        
+    else:
+        form=NotesForm()
     notes = Notes.objects.filter(user=request.user)
     
     context = { 'notes' :notes,'form': form}
