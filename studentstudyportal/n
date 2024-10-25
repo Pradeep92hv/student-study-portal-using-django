@@ -1,0 +1,28 @@
+pip install virtualenv
+python -m venv myenv
+
+source myenv/Scripts/activate
+
+pip install django
+
+django-admin startproject studentstudyportal
+
+cd studentstudyportal
+
+python manage.py runserver
+
+python manage.py startapp dashboard
+
+python manage.py makemigrations
+
+
+python manage.py makemigrations
+python manage.py migrate
+
+
+pip install django-crispy-forms  
+pip install crispy-bootstrap4
+
+
+
+g

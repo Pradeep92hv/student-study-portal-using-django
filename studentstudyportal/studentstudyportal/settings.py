@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-n+d!&*)y7i*gs^$!!000aoei26f@v0i09ht57k=&@9=*4f%2gy'
+SECRET_KEY = 'django-insecure-7=5v6^(y6l=89^m!u*0j7w2hdw05c%!cbk&q-^646)(^jd_@51'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -57,7 +58,7 @@ ROOT_URLCONF = 'studentstudyportal.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -120,13 +121,15 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATICFILES_DIRS=[
+    os.path.join(BASE_DIR,'static')
+]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-STATIC_URL= '/static/'
-STATICFILES_DIRS=[BASE_DIR/"static"]
 
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
-
+# Set the template pack
+CRISPY_TEMPLATE_PACK = 'bootstrap4'  
