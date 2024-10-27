@@ -106,4 +106,8 @@ def update_homework(request, pk):
 
     return redirect('homework')
 
+def delete_homework(request,pk):
+    homework=Homework.objects.get(id=pk)
+    homework.delete()
+    return redirect('homework')
 
