@@ -111,3 +111,8 @@ def delete_homework(request,pk):
     homework.delete()
     return redirect('homework')
 
+def youtube(request):
+    form  = DashBoardForm()
+    context ={'form':form}
+    return render(request,'dashboard/youtube.html',context)
+
