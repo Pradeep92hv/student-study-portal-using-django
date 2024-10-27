@@ -148,3 +148,33 @@ def youtube(request):
     context = {'form': form, 'results': result_list}  # Pass empty results for GET
     return render(request, 'dashboard/youtube.html', context)
 
+
+def todo(request):
+    if request.method == 'POST':  # Correctly check the request method
+        form = TodoForm(request.POST)
+        if form.is_valid():
+            # Safely get the value for is_finished
+            finished = request.POST.get('is_finished') == 'on'  # True if checked, else False
+
+            # Create and save the new todo
+            new_todo = Todo(
+                user=request.user,
+                title=form.cleaned_data['title'],  # Use cleaned data from the form
+                is_finished=finished  # Correct spelling
+            )
+            new_todo.save()
+            messages.success(request, f'Todo added from {request.user.username}!!')
+            return redirect('todo')  # Redirect after POST to prevent resubmission
+
+    else:
+        form = TodoForm()
+    
+    todos = Todo.objects.filter(user=request.user)
+    todos_done = len(todos) == 0  # Use boolean directly based on length
+
+    context = {
+        'form': form,
+        'todos': todos,
+        'todos_done': todos_done
+    }
+    return render(request, 'dashboard/todo.html', context)

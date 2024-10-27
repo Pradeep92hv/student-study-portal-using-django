@@ -17,3 +17,8 @@ class HomeworkForm(forms.ModelForm):
 
 class DashBoardForm(forms.Form):
     text=forms.CharField(max_length =100, label ="Enter Your Serach: ")
+
+class TodoForm(forms.ModelForm):
+    class Meta:
+        model = Todo
+        fields =['title','is_finished']
