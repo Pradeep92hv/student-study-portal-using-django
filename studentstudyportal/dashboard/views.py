@@ -1,6 +1,7 @@
 from django.shortcuts import render,render
 from django.http import HttpResponse
 from youtubesearchpython import VideosSearch
+import requests
 # Create your views here.
 
 def homepage(request):
@@ -110,6 +111,8 @@ def delete_homework(request,pk):
     homework=Homework.objects.get(id=pk)
     homework.delete()
     return redirect('homework')
+
+
 def youtube(request):
     form = DashBoardForm()  # Initialize the form at the start
     result_list = []
@@ -192,3 +195,90 @@ def delete_todo(request,pk):
     todo = get_object_or_404(Todo, id=pk)
     todo.delete()
     return redirect('todo')
+
+def books(request):
+    form = DashBoardForm()
+    context ={
+        'form':form
+    }
+    return render(request,'dashboard/books.html',context)
+
+
+# def books(request):
+#     form = DashBoardForm()  # Initialize the form at the start
+#     result_list = []
+
+#     if request.method == 'POST':  # Check for POST method
+#         form = DashBoardForm(request.POST)
+#         if form.is_valid():  # Validate the form
+#             text = form.cleaned_data['text']
+#             url ="https://www.googleapis.com/books/v1/volumes?q="+text
+#             r = requests.get(url)
+#             answer = r.json()
+#             for i in range(10):
+#                 result_dict = {
+#                     'title': answer['items'][i]['volumeInfo']['title'],
+#                     'subtitle': answer['items'][i]['volumeInfo'].get('subtitle'),
+#                     'description': answer['items'][i]['volumeInfo'].get('description'),
+#                     'count': answer['items'][i]['volumeInfo'].get('pageCount'),
+#                     'categories': answer['items'][i]['volumeInfo'].get('categories'),
+#                     'rating': answer['items'][i]['volumeInfo'].get('pageRating'),
+#                     'thumbnail': answer['items'][i]['volumeInfo'].get('imageLinks'),
+#                     'preview': answer['items'][i]['volumeInfo'].get('previewLink'),    
+#                 }
+                
+#                 result_list.append(result_dict)
+
+#             context = {
+#                 'form': form,
+#                 'results': result_list
+#             }
+#             return render(request, 'dashboard/books.html', context)
+
+#     # For GET request or invalid POST
+#     context = {'form': form}  # Pass empty results for GET
+#     return render(request, 'dashboard/books.html', context)
+
+def books(request):
+    form = DashBoardForm()  # Initialize the form at the start
+    result_list = []
+
+    if request.method == 'POST':  # Check for POST method
+        form = DashBoardForm(request.POST)
+        if form.is_valid():  # Validate the form
+            text = form.cleaned_data['text']
+            url = "https://www.googleapis.com/books/v1/volumes?q=" + text
+            r = requests.get(url)
+            answer = r.json()
+            for i in range(min(10, len(answer.get('items', [])))):  # Safeguard against fewer than 10 items
+                volume_info = answer['items'][i]['volumeInfo']
+                thumbnail_url = volume_info.get('imageLinks')
+                
+                # Check if thumbnail_url is not None and has a thumbnail
+                if thumbnail_url and 'thumbnail' in thumbnail_url:
+                    thumbnail_url = thumbnail_url['thumbnail']
+                else:
+                    thumbnail_url = 'path/to/default/image.jpg'  # Path to a default image if no thumbnail
+
+                result_dict = {
+                    'title': volume_info['title'],
+                    'subtitle': volume_info.get('subtitle'),
+                    'description': volume_info.get('description'),
+                    'count': volume_info.get('pageCount'),
+                    'categories': volume_info.get('categories'),
+                    'rating': volume_info.get('averageRating'),  # Corrected to 'averageRating'
+                    'thumbnail': thumbnail_url,
+                    'preview': volume_info.get('previewLink'),
+                }
+                
+                result_list.append(result_dict)
+
+            context = {
+                'form': form,
+                'results': result_list
+            }
+            return render(request, 'dashboard/books.html', context)
+
+    # For GET request or invalid POST
+    context = {'form': form}  # Pass empty results for GET
+    return render(request, 'dashboard/books.html', context)
