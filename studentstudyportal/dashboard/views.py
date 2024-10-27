@@ -187,3 +187,8 @@ def update_todo(request, pk):
         todo.is_finished = True
     todo.save()
     return redirect('todo')
+
+def delete_todo(request,pk):
+    todo = get_object_or_404(Todo, id=pk)
+    todo.delete()
+    return redirect('todo')
