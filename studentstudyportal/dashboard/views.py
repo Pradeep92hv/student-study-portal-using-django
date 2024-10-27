@@ -95,7 +95,15 @@ def homework(request):
     
 
 
+def update_homework(request, pk):
+    homework = Homework.objects.get(id=pk)
     
+    # Toggle the completion status
+    homework.is_finished = not homework.is_finished
+    homework.save()
+    
+    print("saved")
 
+    return redirect('homework')
 
 

@@ -27,20 +27,25 @@
                 <td>{{homework.due}}</td>
 
                 <td>
-                    <a href="#">
-                        <div class="form-check">
-                            {% if homework.is_finished == True %}
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked>
-                            {% else %}
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                            {% endif %}
-                            <label class="form-check-label text-light" for="flexCheckDefault">
-                                Mark as Completed
-                            </label>
-                        </div>
-                        
-                    </a>
-                </td>
+    <form action="{% url 'update-homework' homework.id %}" method="post" style="display: inline;">
+        {% csrf_token %}
+        <div class="form-check">
+            <input 
+                class="form-check-input" 
+                type="checkbox" 
+                name="is_finished" 
+                value="true" 
+                id="flexCheckDefault" 
+                {% if homework.is_finished %} checked {% endif %}
+                onchange="this.form.submit();"
+            >
+            <label class="form-check-label text-light" for="flexCheckDefault">
+                Mark as Completed
+            </label>
+        </div>
+    </form>
+</td>
+
                 <td><a href="#"><i class="fa fa-trash fa-2x"></i></a></td>
             </tr>
             {% endfor %}
