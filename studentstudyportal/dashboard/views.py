@@ -178,3 +178,12 @@ def todo(request):
         'todos_done': todos_done
     }
     return render(request, 'dashboard/todo.html', context)
+
+def update_todo(request, pk):
+    todo = get_object_or_404(Todo, id=pk)
+    if todo.is_finished == True:
+        todo.is_finished = False
+    else:
+        todo.is_finished = True
+    todo.save()
+    return redirect('todo')
