@@ -74,7 +74,7 @@ def homework(request):
                     finished = Flase
             except:
                 finished = False
-            homeworks=HomeWork(
+            homeworks=Homework(
                 user = request.user,subject = request.POST['subject'],
                 title = request.POST['title'],
                 description =request.POST['description'],
