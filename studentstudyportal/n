@@ -23,5 +23,7 @@ python manage.py migrate
 pip install django-crispy-forms  
 pip install crispy-bootstrap4
 
+hi
 
+bdh
 
