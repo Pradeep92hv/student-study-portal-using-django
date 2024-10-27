@@ -1,6 +1,6 @@
 from django.shortcuts import render,render
 from django.http import HttpResponse
-
+from youtubesearchpython import VideosSearch
 # Create your views here.
 
 def homepage(request):
@@ -110,9 +110,41 @@ def delete_homework(request,pk):
     homework=Homework.objects.get(id=pk)
     homework.delete()
     return redirect('homework')
-
 def youtube(request):
-    form  = DashBoardForm()
-    context ={'form':form}
-    return render(request,'dashboard/youtube.html',context)
+    form = DashBoardForm()  # Initialize the form at the start
+    result_list = []
+
+    if request.method == 'POST':  # Check for POST method
+        form = DashBoardForm(request.POST)
+        if form.is_valid():  # Validate the form
+            text = form.cleaned_data['text']
+            video = VideosSearch(text, limit=10)
+
+            for i in video.result().get('result', []):
+                result_dict = {
+                    'input': text,
+                    'title': i['title'],
+                    'duration': i['duration'],
+                    'thumbnail': i['thumbnails'][0]['url'],
+                    'channel': i['channel']['name'],
+                    'link': i['link'],
+                    'views': i['viewCount']['short'],
+                    'published': i['publishedTime'],
+                }
+                desc = ''
+                if 'descriptionSnippet' in i and i['descriptionSnippet']:
+                    desc = ''.join(j['text'] for j in i['descriptionSnippet'])
+                    result_dict['description'] = desc
+
+                result_list.append(result_dict)
+
+            context = {
+                'form': form,
+                'results': result_list
+            }
+            return render(request, 'dashboard/youtube.html', context)
+
+    # For GET request or invalid POST
+    context = {'form': form, 'results': result_list}  # Pass empty results for GET
+    return render(request, 'dashboard/youtube.html', context)
 
