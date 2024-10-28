@@ -17,10 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from dashboard import views as dash_views
-
+from django.contrib.auth import views as auth_views
+from django.views.generic import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('dashboard.urls')),
     path('register/', dash_views.register, name="register"),
+    path('login/',auth_views.LoginView.as_view(template_name='dashboard/login.html'), name="login"),
+    path('accounts/profile/', RedirectView.as_view(url='/', permanent=False)),
 ]
