@@ -4,6 +4,7 @@ from youtubesearchpython import VideosSearch
 import requests
 import wikipedia
 import wikipediaapi
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 def homepage(request):
@@ -30,7 +31,7 @@ from django.views import generic
 def home(request):
     return render(request,'dashboard/home.html')
 
-
+@login_required
 def notes(request):
     if request.method == "POST":
         form = NotesForm(request.POST)
@@ -48,6 +49,7 @@ def notes(request):
     context = { 'notes' :notes,'form': form}
     return render(request,'dashboard/notes.html',context)
 
+
 class NotesDetailView(generic.DetailView):
     model =Notes
     template_name = 'dashboard/notes_detail.html'  # Specify the correct template
@@ -57,14 +59,14 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Notes
 
-
+@login_required
 def delete_note(request,id):
     note = get_object_or_404(Notes, id=id)
     note.delete()  # Delete the note
     return redirect("notes")
 
     
-    
+@login_required  
 def homework(request):
     if request.method == 'POST':
         form =HomeworkForm(request.POST)
@@ -97,7 +99,7 @@ def homework(request):
     return render(request,'dashboard/homework.html',context)
     
 
-
+@login_required
 def update_homework(request, pk):
     homework = Homework.objects.get(id=pk)
     
@@ -109,6 +111,7 @@ def update_homework(request, pk):
 
     return redirect('homework')
 
+@login_required
 def delete_homework(request,pk):
     homework=Homework.objects.get(id=pk)
     homework.delete()
@@ -153,7 +156,7 @@ def youtube(request):
     context = {'form': form, 'results': result_list}  # Pass empty results for GET
     return render(request, 'dashboard/youtube.html', context)
 
-
+@login_required
 def todo(request):
     if request.method == 'POST':  # Correctly check the request method
         form = TodoForm(request.POST)
@@ -184,6 +187,7 @@ def todo(request):
     }
     return render(request, 'dashboard/todo.html', context)
 
+@login_required
 def update_todo(request, pk):
     todo = get_object_or_404(Todo, id=pk)
     if todo.is_finished == True:
@@ -193,11 +197,13 @@ def update_todo(request, pk):
     todo.save()
     return redirect('todo')
 
+@login_required
 def delete_todo(request,pk):
     todo = get_object_or_404(Todo, id=pk)
     todo.delete()
     return redirect('todo')
 
+@login_required
 def books(request):
     form = DashBoardForm()
     context ={
@@ -408,7 +414,7 @@ def register(request):
     return render(request,'dashboard/register.html',context)
 
 
-
+@login_required
 def profile(request):
     homeworks = Homework.objects.filter(is_finished=False,user=request.user)
     todos = Todo.objects.filter(is_finished=False,user=request.user)
