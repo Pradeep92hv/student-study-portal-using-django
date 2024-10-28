@@ -22,6 +22,7 @@ pip install django-crispy-forms
 pip install crispy-bootstrap4
 pip install youtube-search-python
 pip install requests
+pip install wikipedia
 
 
 

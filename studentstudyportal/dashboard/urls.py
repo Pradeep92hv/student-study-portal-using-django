@@ -27,4 +27,6 @@ urlpatterns = [
 
       path('wiki/', views.wiki, name="wiki"),
 
+      
+
 ]

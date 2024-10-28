@@ -1,5 +1,7 @@
 from django import forms
 from . models import *
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User 
 
 class NotesForm(forms.ModelForm):
     class Meta:
@@ -22,3 +24,11 @@ class TodoForm(forms.ModelForm):
     class Meta:
         model = Todo
         fields =['title','is_finished']
+
+
+  # Ensure this is imported correctly
+
+class UserRegistrationForm(UserCreationForm):
+    class Meta:
+        model = User  # Remove the comma here
+        fields = ['username', 'password1', 'password2']
