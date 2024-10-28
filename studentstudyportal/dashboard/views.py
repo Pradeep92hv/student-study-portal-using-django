@@ -282,3 +282,89 @@ def books(request):
     # For GET request or invalid POST
     context = {'form': form}  # Pass empty results for GET
     return render(request, 'dashboard/books.html', context)
+
+
+# def dictionary(request):
+#     if request.method == 'POST':  # Check for POST method
+#         form = DashBoardForm(request.POST)
+#         if form.is_valid():  # Validate the form
+#             text = form.cleaned_data['text']
+#             url = "https://api.dictionaryapi.dev/api/v2/entries/en_US?q=" + text
+#             r = requests.get(url)
+#             answer = r.json()
+#             try:
+#                 phonetics =answer[0]['phonetics']['texts'],
+#                 audio =answer[0]['phonetics'][0]['audio'],
+#                 definition =answer[0]['meanings'][0]['definitions'][0]['definition'],
+#                 example =answer[0]['meanings'][0]['definitions'][0]['example'],
+#                 synonyms =answer[0]['meanings'][0]['definitions'][0]['synonyms']
+#                 context ={
+#                     'form' : form,
+#                     'input' :text,
+#                     'phonetics':phonetics,
+#                     'audio':audio,
+#                     'definition':definition,
+#                     'example':example,
+#                     'synonyms':synonyms
+                    
+#                 }
+#             except:
+#                 context={
+#                     'form':form,
+#                     'input':""
+#                 }
+#             return render(request, 'dashboard/dictionary.html', context)
+#         else:
+#             form = DashBoardForm() 
+#             context={'form':form}
+#     return render(request, 'dashboard/dictionary.html', context)
+
+
+import requests
+from django.shortcuts import render
+from .form import DashBoardForm  # Adjust according to your project structure
+
+def dictionary(request):
+    form = DashBoardForm()
+    context = {'form': form}
+
+    if request.method == 'POST':
+        form = DashBoardForm(request.POST)
+        if form.is_valid():
+            text = form.cleaned_data['text']
+            url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{text}"
+            r = requests.get(url)
+
+            if r.status_code == 200:
+                try:
+                    answer = r.json()
+                    
+                    # Extract phonetics
+                    phonetics = answer[0]['phonetics'][0]['text'] if answer[0]['phonetics'] else 'No phonetics available.'
+                    audio = answer[0]['phonetics'][0].get('audio', '')
+
+                    # Extract definitions and examples
+                    definitions = answer[0]['meanings'][0]['definitions']
+                    if definitions:
+                        definition = definitions[0].get('definition', 'No definition available.')
+                        example = definitions[0].get('example', 'No example available.')
+                        synonyms = definitions[0].get('synonyms', [])
+                    else:
+                        definition = 'No definition available.'
+                        example = 'No example available.'
+                        synonyms = []
+
+                    context.update({
+                        'input': text,
+                        'phonetics': phonetics,
+                        'audio': audio,
+                        'definition': definition,
+                        'example': example,
+                        'synonyms': synonyms,
+                    })
+                except (ValueError, IndexError) as e:
+                    context['error'] = f"Error parsing data: {str(e)}"
+            else:
+                context['error'] = f"Error: Received status code {r.status_code}"
+
+    return render(request, 'dashboard/dictionary.html', context)
